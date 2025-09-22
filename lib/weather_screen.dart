@@ -23,7 +23,7 @@ String cityName = 'London';
   try {
     final res = await http.get(
       Uri.parse(
-          'https://api.openweathermap.org/data/2.5/forecast?q=$cityName&appid=$OPEN_WEATHER_KEY'),
+          'https://api.openweathermap.org/data/2.5/forecast?q=$cityName&appid=$OPEN_WEATHER_KEY&units=metric'),
     );
     final data = jsonDecode(res.body);
 
@@ -134,7 +134,7 @@ String cityName = 'London';
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: [
-                        Text(currentTemp,
+                        Text('$currentTemp °C',
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
