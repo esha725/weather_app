@@ -12,12 +12,15 @@ class WeatherScreen extends StatefulWidget {
   @override
   State<WeatherScreen> createState() => _WeatherScreenState();
 }
+ 
+
 
 class _WeatherScreenState extends State<WeatherScreen> {
-  late Future<Map<String, dynamic>> weather;
+late Future<Map<String, dynamic>> weather;
+TextEditingController cityController = TextEditingController();
+String cityName = 'London';
   Future<Map<String, dynamic>> getCurrentWeather() async {
   try {
-    String cityName = 'London';
     final res = await http.get(
       Uri.parse(
           'https://api.openweathermap.org/data/2.5/forecast?q=$cityName&appid=$OPEN_WEATHER_KEY'),
@@ -61,7 +64,38 @@ class _WeatherScreenState extends State<WeatherScreen> {
       } , icon: Icon(Icons.refresh)),
     ],
     ),
-    body: FutureBuilder(
+    body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            // TextField to enter city
+            TextField(
+              controller: cityController,
+              decoration: InputDecoration(
+                hintText: 'Enter city name',
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () {
+                    setState(() {
+                      cityName = cityController.text;
+                      weather = getCurrentWeather();
+                    });
+                  },
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onSubmitted: (value) {
+                setState(() {
+                  cityName = value;
+                  weather = getCurrentWeather();
+                });
+              },
+            ),
+      const SizedBox(height: 16),
+
+      Expanded(child: FutureBuilder(
       future: weather,
       builder: (context, snapshot) { 
         if(snapshot.connectionState ==ConnectionState.waiting) {
@@ -185,7 +219,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
             ),
            );
       },
+       ),
+      ),
+      ]
+     ),
     ),
-        );
+   );
   }
 }
